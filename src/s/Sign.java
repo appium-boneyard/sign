@@ -514,15 +514,23 @@ class Sign {
   }
 
   public static void main(String[] args) {
-    if (args.length != 1 || args.length != 2) {
-      System.out.println("Usage: java -jar sign.jar my.apk [--override]");
+    if (args.length < 1) {
+      System.out.println("Usage: java -jar sign.jar my_1.apk [my_2.apk ...] [--override]");
       System.exit(0);
     }
-    if (args.length == 1) {
-      sign(args[0], false); // don't override
+
+    boolean override = false;
+    for (final String arg : args) {
+      if (arg.toLowerCase().equals("--override")) {
+        override = true;
+        break;
+      }
     }
-    if (args.length == 2) {
-      sign(args[0], true); // override
+
+    for (final String apk : args) {
+      if (apk.toLowerCase().endsWith(".apk")) {
+        sign(apk, override);
+      }
     }
   }
 }
