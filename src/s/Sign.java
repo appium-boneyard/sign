@@ -39,6 +39,7 @@ import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
@@ -374,6 +375,20 @@ class Sign {
     }
   }
 
+  /**
+   * Invokes file.delete() and if that fails, file.deleteOnExit(). Immediately
+   * returns if file is null.
+   **/
+  public static void delete(final File file) {
+      if (file == null) {
+          return;
+      }
+
+      if (!file.delete()) {
+          file.deleteOnExit();
+      }
+  }
+
   // Public key.
   private static final byte[] publicBytes = IOUtils.toByteArray(Sign.class
       .getResourceAsStream("/testkey.x509.pem"));
@@ -384,9 +399,31 @@ class Sign {
   // Only compile the pattern once.
   private static Pattern endApk = Pattern.compile("\\.apk$");
 
-  public static void sign(String inputApkPath) {
-    final String outputApkPath = endApk.matcher(inputApkPath).replaceAll("")
+  public static void sign(String inputApkPath, boolean override) {
+    String outputApkPath = endApk.matcher(inputApkPath).replaceAll("")
         + ".s.apk";
+
+    final File input = new File(inputApkPath);
+
+    if (!input.exists() || !input.isFile()) {
+      throw new RuntimeException("Input is not an existing file. " + inputApkPath);
+    }
+
+    File renamedInput = null;
+
+    if (override) {
+      outputApkPath = inputApkPath;
+
+      renamedInput = new File(input.getParentFile(),
+          new Date().getTime() + ".tmp");
+
+      if (!input.renameTo(renamedInput)) {
+        throw new RuntimeException("Unable to rename input apk. "
+            + inputApkPath);
+      }
+
+      inputApkPath = renamedInput.getAbsolutePath();
+    }
 
     boolean signWholeFile = false;
 
@@ -407,7 +444,7 @@ class Sign {
       if (signWholeFile) {
         outputStream = new ByteArrayOutputStream();
       } else {
-        outputStream = outputFile = new FileOutputStream(outputApkPath);
+        outputStream = outputFile = new FileOutputStream(new File(outputApkPath));
       }
       outputJar = new JarOutputStream(outputStream);
       outputJar.setLevel(9);
@@ -460,10 +497,15 @@ class Sign {
       System.exit(1);
     } finally {
       try {
-        if (inputJar != null)
+        if (renamedInput != null) {
+          delete(renamedInput);
+        }
+        if (inputJar != null) {
           inputJar.close();
-        if (outputFile != null)
+        }
+        if (outputFile != null) {
           outputFile.close();
+        }
       } catch (IOException e) {
         e.printStackTrace();
         System.exit(1);
@@ -472,10 +514,15 @@ class Sign {
   }
 
   public static void main(String[] args) {
-    if (args.length != 1) {
-      System.out.println("Usage: java -jar sign.jar my.apk");
+    if (args.length != 1 || args.length != 2) {
+      System.out.println("Usage: java -jar sign.jar my.apk [--override]");
       System.exit(0);
     }
-    sign(args[0]);
+    if (args.length == 1) {
+      sign(args[0], false); // don't override
+    }
+    if (args.length == 2) {
+      sign(args[0], true); // override
+    }
   }
 }
