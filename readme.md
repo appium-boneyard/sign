@@ -6,6 +6,10 @@ Automatically sign an apk with the Android test certificate. The public and priv
 
 `my.s.apk` is created next to `my.apk`
 
+- `java -jar sign.jar my.apk --override` 
+
+`my.apk` is replaced with a signed version
+
 Verify signature.
 
 `jarsigner -verify my.s.apk`
