@@ -2,11 +2,11 @@
 
 Automatically sign an apk with the Android test certificate. The public and private keys are embedded within the jar.
 
-- `java -jar sign.jar my.apk` 
+- `sign my.apk` 
 
 `my.s.apk` is created next to `my.apk`
 
-- `java -jar sign.jar my.apk --override` 
+- `sign my.apk --override` 
 
 `my.apk` is replaced with a signed version
 
@@ -16,10 +16,13 @@ Verify signature.
 
 ### Changes
 
+Added sign.bat which removes the funcion of using 'java -jar sign.jar my.apk to only 'sign my.apk'
+
 Removed `"Created-By", "1.0 (Android SignApk)"` from upstream SignApk.
 
 ### Download
 - [sign.jar](https://github.com/appium/sign/raw/master/dist/sign.jar)
+- [sign.bat](https://github.com/appium/sign/raw/master/sign.bat)
 - [signapk.jar](https://github.com/appium/sign/raw/master/dist/signapk.jar)
 
 ### Build
@@ -42,7 +45,7 @@ http://androidxref.com/4.1.1/xref/build/target/product/security/
 
 The following commands are equivalent.
 
-`java -jar sign.jar my.apk`
+`sign my.apk`
 
 `java -classpath sign.jar orig.SignApk testkey.x509.pem testkey.pk8 my.apk my.s.apk`
 
