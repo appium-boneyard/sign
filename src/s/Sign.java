@@ -51,7 +51,7 @@ import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import java.util.regex.Pattern;
 
-import sun.misc.BASE64Encoder;
+import java.util.Base64;
 import sun.security.pkcs.ContentInfo;
 import sun.security.pkcs.PKCS7;
 import sun.security.pkcs.SignerInfo;
@@ -105,7 +105,7 @@ class Sign {
       main.putValue("Manifest-Version", "1.0");
     }
 
-    BASE64Encoder base64 = new BASE64Encoder();
+    Base64.Encoder base64 = Base64.getEncoder().withoutPadding();
     MessageDigest md = MessageDigest.getInstance("SHA1");
     byte[] buffer = new byte[4096];
     int num;
@@ -136,7 +136,7 @@ class Sign {
         if (input != null)
           attr = input.getAttributes(name);
         attr = attr != null ? new Attributes(attr) : new Attributes();
-        attr.putValue("SHA1-Digest", base64.encode(md.digest()));
+        attr.putValue("SHA1-Digest", base64.encodeToString(md.digest()));
         output.getEntries().put(name, attr);
       }
     }
@@ -154,7 +154,7 @@ class Sign {
       Manifest manifest) throws IOException, GeneralSecurityException {
     final InputStream input = new ByteArrayInputStream(publicBytes);
 
-    BASE64Encoder base64 = new BASE64Encoder();
+    Base64.Encoder base64 = Base64.getEncoder().withoutPadding();
     MessageDigest md = MessageDigest.getInstance("SHA1");
 
     JarEntry je = new JarEntry(OTACERT_NAME);
@@ -170,7 +170,7 @@ class Sign {
     input.close();
 
     Attributes attr = new Attributes();
-    attr.putValue("SHA1-Digest", base64.encode(md.digest()));
+    attr.putValue("SHA1-Digest", base64.encodeToString(md.digest()));
     manifest.getEntries().put(OTACERT_NAME, attr);
   }
 
@@ -219,7 +219,7 @@ class Sign {
     Attributes main = sf.getMainAttributes();
     main.putValue("Signature-Version", "1.0");
 
-    BASE64Encoder base64 = new BASE64Encoder();
+    Base64.Encoder base64 = Base64.getEncoder().withoutPadding();
     MessageDigest md = MessageDigest.getInstance("SHA1");
     PrintStream print = new PrintStream(new DigestOutputStream(
         new ByteArrayOutputStream(), md), true, "UTF-8");
@@ -227,7 +227,7 @@ class Sign {
     // Digest of the entire manifest
     manifest.write(print);
     print.flush();
-    main.putValue("SHA1-Digest-Manifest", base64.encode(md.digest()));
+    main.putValue("SHA1-Digest-Manifest", base64.encodeToString(md.digest()));
 
     Map<String, Attributes> entries = manifest.getEntries();
     for (Map.Entry<String, Attributes> entry : entries.entrySet()) {
@@ -240,7 +240,7 @@ class Sign {
       print.flush();
 
       Attributes sfAttr = new Attributes();
-      sfAttr.putValue("SHA1-Digest", base64.encode(md.digest()));
+      sfAttr.putValue("SHA1-Digest", base64.encodeToString(md.digest()));
       sf.getEntries().put(entry.getKey(), sfAttr);
     }
 
