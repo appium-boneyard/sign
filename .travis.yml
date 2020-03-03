@@ -1,0 +1,50 @@
+language: java
+sudo: false
+jdk: openjdk8
+android:
+  components:
+    - build-tools
+
+jobs:
+  include:
+    - stage:
+      name: JDK 8
+      before_script:
+        - |
+          if [[ "$TRAVIS_BRANCH" == "master" && -n "$TRAVIS_TAG" ]]; then
+            ./build.sh "$TRAVIS_TAG"
+          else
+            ./build.sh
+          fi
+      script: ./test.sh
+    - stage:
+      name: JDK 9
+      jdk: openjdk9
+      before_script: ./build.sh
+      script: ./test.sh
+    - stage:
+      name: JDK 10
+      jdk: openjdk10
+      before_script: ./build.sh
+      script: ./test.sh
+    - stage:
+      name: JDK 11
+      jdk: openjdk11
+      before_script: ./build.sh
+      script: ./test.sh
+    - stage:
+      name: JDK 12
+      jdk: openjdk12
+      before_script: ./build.sh
+      script: ./test.sh
+
+deploy:
+  provider: releases
+  api_key:
+    secure: "TBD"
+  file_glob: true
+  file: ./target/*.jar
+  skip_cleanup: true
+  on:
+    jdk: openjdk8
+    tags: true
