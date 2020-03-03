@@ -1,9 +1,6 @@
 language: java
 sudo: false
 jdk: openjdk8
-android:
-  components:
-    - build-tools
 
 jobs:
   include:
