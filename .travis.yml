@@ -8,7 +8,7 @@ jobs:
       name: JDK 8
       before_script:
         - |
-          if [[ "$TRAVIS_BRANCH" == "master" && -n "$TRAVIS_TAG" ]]; then
+          if [[ -n "$TRAVIS_TAG" ]]; then
             ./build.sh "$TRAVIS_TAG"
           else
             ./build.sh
@@ -40,8 +40,9 @@ deploy:
   api_key:
     secure: "TBD"
   file_glob: true
-  file: ./target/*.jar
+  file: target/*.jar
   skip_cleanup: true
   on:
     jdk: openjdk8
     tags: true
+    repo: appium/sign

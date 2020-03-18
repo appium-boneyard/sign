@@ -2,6 +2,24 @@
 
 Automatically sign an apk with the Android test certificate. The public and private keys are embedded within the jar.
 
+
+### Development
+
+Building:
+
+```bash
+./build.sh
+```
+
+Testing:
+
+```bash
+./test.sh
+```
+
+
+### Usage
+
 - `sign my.apk` 
 
 `my.s.apk` is created next to `my.apk`
@@ -14,22 +32,23 @@ Verify signature.
 
 `jarsigner -verify my.s.apk`
 
-### Changes
 
-Added sign.bat which removes the funcion of using 'java -jar sign.jar my.apk to only 'sign my.apk'
+### Release
 
-Removed `"Created-By", "1.0 (Android SignApk)"` from upstream SignApk.
+New releases are published to GitHub automatically by CI agent.
+It is only necessary to push a new version tag to `master`:
 
-### Download
-- [sign.jar](https://github.com/appium/sign/raw/master/dist/sign.jar)
-- [sign.bat](https://github.com/appium/sign/raw/master/sign.bat)
-- [signapk.jar](https://github.com/appium/sign/raw/master/dist/signapk.jar)
+```bash
+git tag -a 1.0 -m 1.0
+git push --tags origin master
+git push --tags remote master
+```
 
-### Build
-`./build.sh` or `mvn package`
 
 ### License
+
 Released under the Apache 2.0 License (the same as Android's [SignApk.java](https://github.com/android/platform_build/blob/master/tools/signapk/SignApk.java)).
+
 
 ### Based on the following AOSP 4.1.1 files & sources
 
@@ -50,6 +69,7 @@ The following commands are equivalent.
 `java -classpath sign.jar orig.SignApk testkey.x509.pem testkey.pk8 my.apk my.s.apk`
 
 `java -jar SignApk.jar testkey.x509.pem testkey.pk8 my.apk my.s.apk`
+
 
 ### Similar Projects
 
