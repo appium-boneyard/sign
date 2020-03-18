@@ -13,32 +13,31 @@ jobs:
           else
             ./build.sh
           fi
-      script: ./test.sh
+      script: "./test.sh"
     - stage:
       name: JDK 9
       jdk: openjdk9
-      before_script: ./build.sh
-      script: ./test.sh
+      before_script: "./build.sh"
+      script: "./test.sh"
     - stage:
       name: JDK 10
       jdk: openjdk10
-      before_script: ./build.sh
-      script: ./test.sh
+      before_script: "./build.sh"
+      script: "./test.sh"
     - stage:
       name: JDK 11
       jdk: openjdk11
-      before_script: ./build.sh
-      script: ./test.sh
+      before_script: "./build.sh"
+      script: "./test.sh"
     - stage:
       name: JDK 12
       jdk: openjdk12
-      before_script: ./build.sh
-      script: ./test.sh
-
+      before_script: "./build.sh"
+      script: "./test.sh"
 deploy:
   provider: releases
   api_key:
-    secure: "TBD"
+    secure: S389qkxYxHbqlv2/KOLzhwSuz36m35cY7yafHRd2y2bsY4nwJ+jaqzggBLoSY6bN+UOxxaZOgw9GO5TvZUMGcSC8xt1f7DnKeAYsHfvAd8mh7hXQBc9B7XK6OEcWatsLpnuyNoGN8bssDTY1xiJVsGyyz6XozqhnKGzfZFiPEp+eTIKzUT1YpRjOfXFZ152u42GugANX4G9TgVipz0jp33CJrrYgAEHOsx4In3Ib1i+Tmpg5XnCsMsBDI/75eegGFl/d34sV1jN3rsijGVMzHCwyL89uw7Duo1Bt3E/NwehayXBiiK3DWP7u276kDY8+XVUFIcKnH8FyGawrYh6IJfkQUzTARrmXpzHDjFGAQqRnqRR/DYMYpEtfZp6Uuidjmbr4P8XsoGlTEMGiAc+6obqeju0yCtx/WewBTx6pMjrGIX50fpGt+yMc4LB4jsvlMAAl370xYeTiaRakIrK2OzAi4UdbS99NHXQvlDrFXVGJCy4RANrbA5kVwhTBwF25QbE12W3+8tCMOxft+gcWz/M3abhEusiL9J3+W9pYyg1X3PKr7sSrGhwd7hrM7ZPglrysdEs+oOJKfxeQbFLdJ+WwLJdag05CHlPzfFUkdIL3LWFvtdbjbFWB3mi+Y2qIcBg4s2fPdoAX+rOpfCBpXCoNvwCo67oz2vNVZE2GfRU=
   file_glob: true
   file: target/*.jar
   skip_cleanup: true
